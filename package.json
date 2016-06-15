@@ -1,0 +1,22 @@
+{
+  "name": "TSEncoder-Win",
+  "version": "1.0.0",
+  "description": "TSファイルのスクランブル解除・チャプター作成・エンコードを一続きで行うバッチプログラム",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cracked-cdr/TSEncoder-Win.git"
+  },
+  "keywords": [
+    "ts",
+    "encode",
+    "batch"
+  ],
+  "author": "cracked-cdr",
+  "license": "MIT",
+  "dependencies": {
+    "glob": "^7.0.3",
+    "log4js": "^0.6.36",
+    "pathinfo": "^0.1.0",
+    "sprintf-js": "^1.0.3"
+  }
+}

@@ -1,0 +1,43 @@
+/**
+ * exe-path.js
+ * 処理に利用する各実行ファイルと関連ファイルの定義
+ * 
+ * Created by cracked-cdr
+ */
+
+var path = require('path');
+var root = path.join(require('pathinfo')(process.argv[1]).dirname, 'tools');
+
+/*
+ その他の場所にツールがある場合、'=' 以降を削除し、絶対パスで文字列指定してください。
+ パスの表記はフォルダの区切り(\)を 2つ記述する必要があります
+ 
+ ex: C:\\foo\\bar に Multi2DecDos.exe がある場合
+     path.join(root, 'Multi2Dec', 'Multi2DecDos.exe'); -> 'C:\\foo\\bar\\Multi2DecDos.exe';
+*/
+
+// Multi2Decのパス（スクランブル解除に使用。Multi2DecDos.exeを指定してください）
+module.exports.MULTI2DEC_PATH = path.join(root, 'Multi2Dec', 'Multi2DecDos.exe');
+
+// logoGuillo実行ファイルパス
+module.exports.LOGOGUILLO_PATH = path.join(root, 'logoGuillo', 'logoGuillo.exe');
+
+// logoGuilloで利用するavs2pipemodのパス
+module.exports.AVS2X_PATH = path.join(root, 'avs2pipemod', 'avs2pipemod.exe');
+
+// logoGuilloで利用するTS展開プラグインのパス
+module.exports.AVSPLG_PATH = path.join(root, 'L-SMASH', 'LSMASHSource.dll');
+
+// logoGuilloで使用するロゴデータフォルダ
+// ※フォルダ内に"bs","dtv"フォルダを作成し、局名と同名のlgdファイルを格納してください
+module.exports.LOGO_PATH = path.join(root, 'logoGuillo', 'logo');
+
+// LogoGuilloで使用するAutoTuneParamフォルダ
+// ※フォルダ内に"bs","dtv"フォルダを作成し、局名と同名のlgd.autotune.paramファイルを格納してください
+module.exports.PARAM_PATH = path.join(root, 'logoGuillo', 'param');
+
+// MP4Boxのパス（チャプター埋め込みに使用）
+module.exports.MP4BOX_PATH = path.join(root, 'mp4box', 'mp4box.exe');
+
+// HandbrakeCLIのパス
+module.exports.HANDBRAKE_PATH = 'C:\\Program Files\\Handbrake\\HandBrakeCLI.exe';
