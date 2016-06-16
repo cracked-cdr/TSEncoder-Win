@@ -68,4 +68,4 @@ module.exports.createEncodeSettings = function(fileName) {
     }
 
     return encSettings;
-}
+};
