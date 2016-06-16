@@ -28,13 +28,13 @@ TSファイルのスクランブル解除・チャプター作成・エンコー
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## 必要なソフトウェア
-* [Node.js](https://nodejs.org/) v4.4.5 LTS
+* [Node.js](https://nodejs.org/)（v4.4.5 LTSをダウンロードしてください）
 * [Handbrake](https://handbrake.fr/)
-* [logoGuillo](http://loggialogic.blogspot.jp/)
-* [L-SMASH Works](http://pop.4-bit.jp/)（同梱されているLSMASHSource.dllが必要になります）
+* [logoGuillo](http://loggialogic.blogspot.jp/2014/04/cm-logoguillo-v210.html)（v2.10推奨）
+* [L-SMASH Works](http://pop.4-bit.jp/)（同梱されているLSMASHSource.dll(32bit)が必要になります）
 * [avs2pipemod](http://csbarn.blogspot.jp/2012/09/avs2pipemod-17.html)
-* [mp4box](https://gpac.wp.mines-telecom.fr/downloads/gpac-nightly-builds/)  
-  インストーラ形式なので、[7-zip](https://sevenzip.osdn.jp/)などで解凍してコピーするかインストール後にexe-path.jsを編集してパスを指定してください（後述）
+* [GPAC](https://gpac.wp.mines-telecom.fr/downloads/gpac-nightly-builds/)（同梱されているmp4boxとmp4box動作のためのDLLが必要）
+  * インストーラ形式なので、[7-zip](https://sevenzip.osdn.jp/)などで解凍してコピーするかインストール後にexe-path.jsを編集してパスを指定してください（後述）
 * [Multi2Dec](https://www.google.co.jp/search?q=Multi2Dec)
 
 ## セットアップ
@@ -57,7 +57,6 @@ TSEncoder-Win/tools 内にHandbrake以外のソフトウェアを以下のよう
 tools
 ├── avs2pipemod
 |   ├── avs2pipemod.exe
-|   ├── avs2pipemod64.exe
 |   └── …
 ├── logoGuillo
 |   ├── logo
