@@ -2,6 +2,31 @@
 TSファイルのスクランブル解除・チャプター作成・エンコードを一続きで行うnode.js製バッチプログラムです。  
 作者の環境と必要なソフトウェアの関係上、Windows専用になります。
 
+## 目次
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [必要なソフトウェア](#%E5%BF%85%E8%A6%81%E3%81%AA%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2)
+- [セットアップ](#%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97)
+  - [npmの実行](#npm%E3%81%AE%E5%AE%9F%E8%A1%8C)
+  - [必要ソフトウェアの配置](#%E5%BF%85%E8%A6%81%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2%E3%81%AE%E9%85%8D%E7%BD%AE)
+  - [config.jsの編集](#configjs%E3%81%AE%E7%B7%A8%E9%9B%86)
+  - [exe-path.jsの編集（必要ソフトがすでに他の場所にある場合のみ）](#exe-pathjs%E3%81%AE%E7%B7%A8%E9%9B%86%EF%BC%88%E5%BF%85%E8%A6%81%E3%82%BD%E3%83%95%E3%83%88%E3%81%8C%E3%81%99%E3%81%A7%E3%81%AB%E4%BB%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E3%81%82%E3%82%8B%E5%A0%B4%E5%90%88%E3%81%AE%E3%81%BF%EF%BC%89)
+- [使い方](#%E4%BD%BF%E3%81%84%E6%96%B9)
+  - [単体で動かす場合](#%E5%8D%98%E4%BD%93%E3%81%A7%E5%8B%95%E3%81%8B%E3%81%99%E5%A0%B4%E5%90%88)
+  - [複数のTSファイルを処理したい場合](#%E8%A4%87%E6%95%B0%E3%81%AEts%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E5%87%A6%E7%90%86%E3%81%97%E3%81%9F%E3%81%84%E5%A0%B4%E5%90%88)
+  - [録画後のバッチとして使う](#%E9%8C%B2%E7%94%BB%E5%BE%8C%E3%81%AE%E3%83%90%E3%83%83%E3%83%81%E3%81%A8%E3%81%97%E3%81%A6%E4%BD%BF%E3%81%86)
+    - [注意](#%E6%B3%A8%E6%84%8F)
+- [logoGuilloのロゴデータ・パラメータデータについて](#logoguillo%E3%81%AE%E3%83%AD%E3%82%B4%E3%83%87%E3%83%BC%E3%82%BF%E3%83%BB%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6)
+  - [プログラム内でのロゴデータ・パラメータデータ指定条件](#%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E5%86%85%E3%81%A7%E3%81%AE%E3%83%AD%E3%82%B4%E3%83%87%E3%83%BC%E3%82%BF%E3%83%BB%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%83%87%E3%83%BC%E3%82%BF%E6%8C%87%E5%AE%9A%E6%9D%A1%E4%BB%B6)
+  - [ロゴデータ・パラメータデータの配置](#%E3%83%AD%E3%82%B4%E3%83%87%E3%83%BC%E3%82%BF%E3%83%BB%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E9%85%8D%E7%BD%AE)
+  - [default.autoTune.param](#defaultautotuneparam)
+- [encode-settings.jsについて](#encode-settingsjs%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6)
+- [利用npm package](#%E5%88%A9%E7%94%A8npm-package)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## 必要なソフトウェア
 * [Node.js](https://nodejs.org/) v4.4.5 LTS
 * [Handbrake](https://handbrake.fr/)
