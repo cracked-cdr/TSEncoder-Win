@@ -5,8 +5,9 @@
  * Created by cracked-cdr
  */
 
-var path = require('path');
-var root = path.join(require('pathinfo')(process.argv[1]).dirname, 'tools');
+var path     = require('path');
+var pathinfo = require('pathinfo');
+var root     = path.join(pathinfo(process.argv[1]).dirname, 'tools');
 
 /*
  その他の場所にツールがある場合、'=' 以降を削除し、絶対パスで文字列指定してください。
@@ -30,11 +31,11 @@ module.exports.AVSPLG_PATH = path.join(root, 'L-SMASH', 'LSMASHSource.dll');
 
 // logoGuilloで使用するロゴデータフォルダ
 // ※フォルダ内に"bs","dtv"フォルダを作成し、局名と同名のlgdファイルを格納してください
-module.exports.LOGO_PATH = path.join(root, 'logoGuillo', 'logo');
+module.exports.LOGO_PATH = path.join(pathinfo(this.LOGOGUILLO_PATH).dirname, 'logo');
 
 // LogoGuilloで使用するAutoTuneParamフォルダ
 // ※フォルダ内に"bs","dtv"フォルダを作成し、局名と同名のlgd.autotune.paramファイルを格納してください
-module.exports.PARAM_PATH = path.join(root, 'logoGuillo', 'param');
+module.exports.PARAM_PATH = path.join(pathinfo(this.LOGOGUILLO_PATH).dirname, 'param');
 
 // MP4Boxのパス（チャプター埋め込みに使用）
 module.exports.MP4BOX_PATH = path.join(root, 'mp4box', 'mp4box.exe');
