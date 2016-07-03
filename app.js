@@ -29,9 +29,8 @@ log4js.configure({
         {
             type: 'file',
             filename: path.join(jsPathInfo.dirname, 'logs', jsPathInfo.basename + '.log'),
-            pattern: "_yyyyMMdd",
             maxLogSize: 262144,   // 2MiB
-            backups: 100    // 100日分保存(になるはず)
+            backups: 100
         }
     ]
 });
