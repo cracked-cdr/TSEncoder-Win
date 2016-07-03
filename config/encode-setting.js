@@ -54,7 +54,10 @@ module.exports.encSettings = encSettings;
  (どう変更できるかはHandbrakeCLI.exeのヘルプ等を参照)
  わからない場合や不要な場合はそのままにするか関数内を "return encSettings;" の行のみにしてください
 */
-module.exports.createEncodeSettings = function(fileName) {
+module.exports.createEncodeSettings = function(filePath, fileName, serviceName) {
+    if (!serviceName) {
+        serviceName = '';
+    }
 
     // Example
     // fileNameに"みんなのうた"が含まれていれば以下の設定にする

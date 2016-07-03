@@ -15,10 +15,11 @@ var config         = require('../config/config');
 var logger         = require('log4js').getLogger();
 
 // エンコードを実行
-module.exports.encodeTS = function(filePath) {
+module.exports.encodeTS = function(filePath, serviceName) {
     logger.info('エンコードを開始します');
 
-    var encConf = encode_setting.createEncodeSettings(filePath);
+    var fileName = pathinfo(filePath).basename;
+    var encConf = encode_setting.createEncodeSettings(filePath, fileName, serviceName);
     logger.info(encConf);
     
     try {
@@ -30,7 +31,7 @@ module.exports.encodeTS = function(filePath) {
         }
     }
 
-    var mp4Path = path.join(config.MP4_FOLDER, pathinfo(filePath).basename + '.mp4');
+    var mp4Path = path.join(config.MP4_FOLDER, fileName + '.mp4');
 
     var execStr = '"' + exe_path.HANDBRAKE_PATH
         + '" -i "' + filePath

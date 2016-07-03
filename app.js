@@ -102,7 +102,7 @@ var mp4Path = null;
 var tryCnt;
 for (tryCnt = 0; tryCnt < config.TRY_ENCODE_MAX; tryCnt++) {
 
-    mp4Path = encode.encodeTS(filePath);
+    mp4Path = encode.encodeTS(filePath, serviceName);
 
     if (!mp4Path || fs.statSync(mp4Path).size < config.ERR_ENCODE_FILE_SIZE) {
         logger.info('エラーファイルが作成されたので再試行します');
