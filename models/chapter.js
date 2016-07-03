@@ -15,7 +15,7 @@ var config        = require('../config/config');
 var logger        = require('log4js').getLogger();
 
 // チャプターファイルの作成
-module.exports.createChapter = function(filePath, chapterDir) {
+module.exports.createChapter = function(filePath, chapterDir, serviceName) {
     logger.info('チャプターファイルを作成します');
 
     if (!filePath) {
@@ -50,8 +50,20 @@ module.exports.createChapter = function(filePath, chapterDir) {
         }
     }
 
-    var lgdPath      = findLgdPath(fileName);
-    var autoTunePath = findAutoTuneParamPath(fileName);
+    // ロゴデータとパラメータファイルの検索。
+    // 放送局名が渡されていればによる検索を先に行い、ファイルが見つからない場合はファイル名で再度検索
+    var lgdPath;
+    var autoTunePath;
+    if (serviceName) {
+        lgdPath = findLgdPath(serviceName);
+        autoTunePath = findAutoTuneParamPath(serviceName);
+    }
+    if (!lgdPath) {
+        lgdPath = findLgdPath(fileName);
+    }
+    if (!autoTunePath) {
+        autoTunePath = findAutoTuneParamPath(fileName);
+    }
 
     if (!lgdPath) {
         logger.warn('ロゴファイルが見つからないためチャプター作成処理を中止しました');
@@ -61,7 +73,7 @@ module.exports.createChapter = function(filePath, chapterDir) {
         logger.warn('パラメータファイルが見つからないためチャプター作成処理を中止しました');
         return;
     }
-    
+
     logger.debug('Use lgd: ' + lgdPath);
     logger.debug('Use param: ' + autoTunePath);
 
@@ -131,7 +143,7 @@ module.exports.embedChapter = function(mp4Path, chapterPath, startAtSec, chapter
 };
 
 // ファイル名から放送局を探し、見つかった.lgdファイルパスを返却
-function findLgdPath(fileName) {
+function findLgdPath(searchName) {
     var bsDir  = path.join(exe_path.LOGO_PATH, 'bs');
     var dtvDir = path.join(exe_path.LOGO_PATH, 'dtv');
 
@@ -141,7 +153,7 @@ function findLgdPath(fileName) {
     // ファイル名の部分検索で見ているためBSを先に検索する（地デジを先に行うとBS"○○"に誤爆する）
     try {
         if (fs.statSync(bsDir)) {
-            var logoPath = searchPath(bsDir, '.lgd', fileName);
+            var logoPath = searchPath(bsDir, '.lgd', searchName);
             if (logoPath) {
                 return path.join(bsDir, logoPath);
             }
@@ -151,14 +163,14 @@ function findLgdPath(fileName) {
             logger.warn('lgdファイル（BS）を格納したフォルダが見つかりません');
         } else {
             logger.fatal(err);
-            return;
+            return null;
         }
     }
 
     // 地デジ
     try {
         if (fs.statSync(dtvDir)) {
-            var logoPath = searchPath(dtvDir, '.lgd', fileName);
+            var logoPath = searchPath(dtvDir, '.lgd', searchName);
             if (logoPath) {
                 return path.join(dtvDir, logoPath);
             }
@@ -168,7 +180,7 @@ function findLgdPath(fileName) {
             logger.warn('lgdファイル（地デジ）を格納したフォルダが見つかりません');
         } else {
             logger.fatal(err);
-            return;
+            return null;
         }
     }
 
@@ -176,7 +188,7 @@ function findLgdPath(fileName) {
 }
 
 //ファイル名から番組名を探し、対応した.lgd.autoTune.paramファイルパスを取得する
-function findAutoTuneParamPath(fileName) {
+function findAutoTuneParamPath(searchName) {
     var bsDir  = path.join(exe_path.PARAM_PATH, 'bs');
     var dtvDir = path.join(exe_path.PARAM_PATH, 'dtv');
 
@@ -186,7 +198,7 @@ function findAutoTuneParamPath(fileName) {
     // ファイル名の部分検索で見ているためBSを先に検索する（地デジを先に行うとBS"○○"に誤爆する）
     try {
         if (fs.statSync(bsDir)) {
-            var logoPath = searchPath(bsDir, '.lgd.autoTune.param', fileName);
+            var logoPath = searchPath(bsDir, '.lgd.autoTune.param', searchName);
             if (logoPath) {
                 return path.join(bsDir, logoPath);
             }
@@ -196,14 +208,14 @@ function findAutoTuneParamPath(fileName) {
             logger.warn('lgd.autotune.paramファイル（BS）を格納したフォルダが見つかりません');
         } else {
             logger.fatal(err);
-            return;
+            return null;
         }
     }
 
     // 地デジ
     try {
         if (fs.statSync(dtvDir)) {
-            var logoPath = searchPath(dtvDir, '.lgd.autoTune.param', fileName);
+            var logoPath = searchPath(dtvDir, '.lgd.autoTune.param', searchName);
             if (logoPath) {
                 return path.join(dtvDir, logoPath);
             }
@@ -213,7 +225,7 @@ function findAutoTuneParamPath(fileName) {
             logger.warn('lgd.autotune.paramファイル（地デジ）を格納したフォルダが見つかりません');
         } else {
             logger.fatal(err);
-            return;
+            return null;
         }
     }
 
@@ -226,7 +238,7 @@ function findAutoTuneParamPath(fileName) {
     } catch (err) {
         if (err.errno != -4058) {
             logger.fatal(err);
-            return;
+            return null;
         }
     }
 

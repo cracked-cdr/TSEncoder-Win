@@ -58,10 +58,9 @@ var folderPath = info.dirname;
 var fileName = info.filename;
 var noExtFileName = info.basename;
 
-var scrambles = 0;
-if (argv[3]) {
-    scrambles = argv[3];
-}
+var scrambles = argv[3] ? argv[3] : 0;
+
+var serviceName = argv[4] ? argv[4] : null;
 
 logger.info('-- 処理を開始します: ' + filePath + ', Scrambles: ' + scrambles);
 
@@ -96,10 +95,10 @@ if (scrambles > 0) {
 }
 
 // チャプター作成
-var chapterPath = chapter.createChapter(filePath, config.CHAPTER_FOLDER);
+var chapterPath = chapter.createChapter(filePath, config.CHAPTER_FOLDER, serviceName);
 
 // エンコード実行
-var mp4Path = null
+var mp4Path = null;
 var tryCnt;
 for (tryCnt = 0; tryCnt < config.TRY_ENCODE_MAX; tryCnt++) {
 
