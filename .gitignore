@@ -1,5 +1,7 @@
+.idea/
 node_modules/
 .gitignore
+TSEncoder-Win.iml
 tools/*
 logs/*
 !.gitkeep
