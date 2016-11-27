@@ -24,10 +24,10 @@ module.exports.MULTI2DEC_PATH = path.join(root, 'Multi2Dec', 'Multi2DecDos.exe')
 module.exports.LOGOGUILLO_PATH = path.join(root, 'logoGuillo', 'logoGuillo.exe');
 
 // logoGuilloで利用するavs2pipemodのパス
-module.exports.AVS2X_PATH = path.join(root, 'avs2pipemod', 'avs2pipemod.exe');
+module.exports.AVS2PIPEMOD_PATH = path.join(root, 'avs2pipemod', 'avs2pipemod.exe');
 
 // logoGuilloで利用するTS展開プラグインのパス
-module.exports.AVSPLG_PATH = path.join(root, 'L-SMASH', 'LSMASHSource.dll');
+module.exports.LSMASH_DLL_PATH = path.join(root, 'L-SMASH', 'LSMASHSource.dll');
 
 // logoGuilloで使用するロゴデータフォルダ
 // ※フォルダ内に"bs","dtv"フォルダを作成し、局名と同名のlgdファイルを格納してください

@@ -80,8 +80,8 @@ module.exports.createChapter = function(filePath, chapterDir, serviceName) {
     var execStr = '"' + exe_path.LOGOGUILLO_PATH
                 + '" -video "' + filePath
                 + '" -lgd "' + lgdPath
-                + '" -avs2x "' + exe_path.AVS2X_PATH
-                + '" -avsPlg "' + exe_path.AVSPLG_PATH
+                + '" -avs2x "' + exe_path.AVS2PIPEMOD_PATH
+                + '" -avsPlg "' + exe_path.LSMASH_DLL_PATH
                 + '" -prm "' + (autoTunePath ? autoTunePath : lgdPath)
                 + '" -out "' + chapterFilePath
                 + '" -outFmt chap -disScnChgDtc';
@@ -258,7 +258,7 @@ function searchPath(dir, ext, fname) {
             find = f;
             break;
         }
-    };
+    }
     return find;
 }
 
