@@ -42,3 +42,11 @@ module.exports.MP4BOX_PATH = path.join(root, 'mp4box', 'mp4box.exe');
 
 // HandbrakeCLIのパス
 module.exports.HANDBRAKE_PATH = 'C:\\Program Files\\Handbrake\\HandBrakeCLI.exe';
+
+// ts_parser.exeのパス
+// QSVEncCを利用する場合必須です。
+module.exports.TS_PARSER_PATH = path.join(root, 'ts_parser', 'ts_parser.exe');
+
+// fawcl.exeのパス
+// QSVEncCを利用する場合必須です。
+module.exports.FAWCL_PATH = path.join(root, 'FakeAacWav', 'fawcl.exe');

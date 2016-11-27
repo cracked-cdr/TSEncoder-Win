@@ -46,3 +46,9 @@ module.exports.MP4BOX_PRIORITY = '';
 
 // Handbrakeのプロセス優先度を指定
 module.exports.HANDBRAKE_PRIORITY = '';
+
+// ts_parser.exeのプロセス優先度を指定
+module.exports.TS_PARSER_PRIORITY = '';
+
+// fawcl.exeのプロセス優先度を指定
+module.exports.FAWCL_PRIORITY = '';
