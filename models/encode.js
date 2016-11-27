@@ -45,7 +45,6 @@ module.exports.encodeTS = function(filePath, serviceName) {
         + ' --h264-level="4.2" --h264-profile=high '
         + encConf.decomb + ' ' + encConf.detelecine + ' ' + encConf.frame_rate
         + ' ' + (encConf.start_at_sec ? '--start-at duration:' + encConf.start_at_sec : '')
-        + ' --qsv-async-depth=2'
         + ' --verbose=1'
         + ' ' + encConf.other_options;
 
