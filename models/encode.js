@@ -8,7 +8,9 @@
 var fs             = require('fs');
 var path           = require('path');
 var pathinfo       = require('pathinfo');
+var iconv          = require('iconv-lite');
 var child_process  = require('child_process');
+var avisynth       = require('./avisynth');
 var encode_setting = require('../config/encode-setting');
 var exe_path       = require('../config/exe-path');
 var config         = require('../config/config');
@@ -33,23 +35,58 @@ module.exports.encodeTS = function(filePath, serviceName) {
 
     var mp4Path = path.join(config.MP4_FOLDER, fileName + '.mp4');
 
-    var execStr = '"' + exe_path.HANDBRAKE_PATH
-        + '" -i "' + filePath
-        + '" -o "' + mp4Path
-        + '" -4 -f mp4 ' + encConf.crop + ' ' + encConf.anamorphic
-        + ' --modulus 4 ' + encConf.video_size
-        + ' -e qsv_h264 ' + encConf.quality_or_rate
-        + ' -a 1,2'
-        + ' ' + (encConf.audio_rate ? '-E av_aac -6 stereo -B ' + encConf.audio_rate : '-E copy')
-        + ' --audio-fallback fdk_aac'
-        + ' --h264-level="4.2" --h264-profile=high '
-        + encConf.decomb + ' ' + encConf.detelecine + ' ' + encConf.frame_rate
-        + ' ' + (encConf.start_at_sec ? '--start-at duration:' + encConf.start_at_sec : '')
-        + ' --verbose=1'
-        + ' ' + encConf.other_options;
+    switch (config.ENCODE_APPLICATION) {
+        case 1:
+            return encodeByQSVEnc(filePath, mp4Path, encConf);
+        case 2:
+            return encodeByHandbrake(filePath, mp4Path, encConf);
+    }
+};
+
+// QSVEnc(+Avisynth)によるエンコード処理
+function encodeByQSVEnc(filePath, mp4Path, encConf) {
+    var execStr = '';
+    if (config.QSVENC_USE_AVS) {
+        var avsPath = avisynth.generateAVS(filePath);
+        execStr += `"${exe_path.AVS2PIPEMOD_PATH}" ${encConf.avs_options} "${avsPath}" | "${exe_path.QSVENC_PATH}" -i - `;
+
+    } else {
+        execStr += `"${exe_path.QSVENC_PATH}" -i "${filePath}" `;
+    }
+    execStr += `-o "${mp4Path}" ${encConf.qsvenc_options} `;
+    if (parseFloat(encConf.start_cut_sec) != 0.0) {
+        execStr += `--seek ${encConf.start_cut_sec} `;
+    }
+
+    logger.debug(execStr);
+
+    var tmpBat = path.join(pathinfo(process.argv[1]).dirname, 'tmp.bat');
+    try {
+        fs.writeFileSync(tmpBat, iconv.encode(execStr + '\nexit', 'shift_jis'));
+    } catch (err) {
+        tmpBat = null
+    }
+
+    if (tmpBat) {
+        child_process.execSync(`start /wait /min ${config.QSVENC_PRIORITY} "" "${tmpBat}"`);
+        fs.unlinkSync(tmpBat);
+    } else {
+        child_process.execSync(execStr);
+    }
+
+    return mp4Path;
+}
+
+// Handbrakeによるエンコード処理
+function encodeByHandbrake(filePath, mp4Path, encConf) {
+    var execStr = `"${exe_path.HANDBRAKE_PATH}" -i "${filePath}" -o "${mp4Path}" ${encConf.handbrake_options} `;
+    if (parseFloat(encConf.start_cut_sec) != 0.0) {
+        execStr += `--start-at duration:${encConf.start_cut_sec} `;
+    }
 
     logger.debug(execStr);
 
     child_process.execSync('start /wait /min ' + config.HANDBRAKE_PRIORITY + ' "" ' + execStr);
     return mp4Path;
-};
+}
+

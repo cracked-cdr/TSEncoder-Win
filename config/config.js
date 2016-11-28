@@ -20,6 +20,14 @@ module.exports.CHAPTER_FOLDER = 'D:\\Videos\\CHAPTER';
 // 処理済みTSファイル移動先フォルダ
 module.exports.TS_DONE_FOLDER = 'D:\\Videos\\TS\\done';
 
+// 利用するエンコードソフトウェア
+// 1: QSVEncC, 2: HandbrakeCLI
+// 上記以外の値の場合無視されます
+module.exports.ENCODE_APPLICATION = 1;
+
+// QSVEncでエンコードする際にAvisynthを利用するかどうか (利用する: true, 利用しない: false)
+module.exports.QSVENC_USE_AVS = true;
+
 // エンコードファイルがエラーファイルだった場合に再度エンコードを行う回数
 module.exports.TRY_ENCODE_MAX = 5;
 
@@ -46,6 +54,9 @@ module.exports.MP4BOX_PRIORITY = '';
 
 // Handbrakeのプロセス優先度を指定
 module.exports.HANDBRAKE_PRIORITY = '';
+
+// QSVEncCのプロセス優先度を指定
+module.exports.QSVENC_PRIORITY = '';
 
 // ts_parser.exeのプロセス優先度を指定
 module.exports.TS_PARSER_PRIORITY = '';
