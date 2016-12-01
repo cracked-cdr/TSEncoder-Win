@@ -16,7 +16,6 @@ String.prototype.hasStr = function(str) {
 // ここで記述されている内容をデフォルト値として、下の関数内の変更が適用されます
 var encSettings = {
     avs_options       : '-y4mp',
-    handbrake_options : '-e qsv_h264 -4 -f mp4 --h264-profile=main --loose-anamorphic --modulus 4 -a 1,2 -E copy ' +
     qsvenc_options    : (config.QSVENC_USE_AVS ? '--y4m ' : '') +
                         '--fallback-rc --dar 16:9 -u best --scenechange --profile auto ',
     handbrake_options : '-e qsv_h264 -4 -f mp4 --h264-profile=auto --loose-anamorphic --modulus 4 -a 1,2 -E copy ' +
@@ -52,8 +51,8 @@ module.exports.createEncodeSettings = function(filePath, fileName, serviceName) 
         return encSettings;
     }
 
-    // それ以外の場合は以下の設定にする
-    encSettings.qsvenc_options += '--la-icq 24 --la-quality auto --qp-max 21:23:24 ';
+    // それ以外の場合は以下の設定を追加
+    encSettings.qsvenc_options += '--la-icq 24 --la-quality slow --qp-min 27:28:29 --qp-max 21:22:22 ';
     encSettings.handbrake_options += '-q 24 ';
 
     return encSettings;
