@@ -35,7 +35,7 @@ module.exports.demuxTsParser = function(filePath, startCutSec) {
         var delay = null;
         var m = aacName.match(/^.*DELAY (-?[0-9]+)ms.aac$/);
         if (m && m.length > 1) {
-            delay = parseInt(m[1]) + parseInt(parseFloat(startCutSec) * 1000);
+            delay = parseInt(m[1]) - parseInt(parseFloat(startCutSec) * 1000);
         }
         applyDelay(aac, delay);
     });
