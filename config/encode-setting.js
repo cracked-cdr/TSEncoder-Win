@@ -5,6 +5,8 @@
  * Created by cracked-cdr
  */
 
+var config = require('../config/config');
+
 // 引数strの内容が含まれていればtrue
 String.prototype.hasStr = function(str) {
     return ~this.indexOf(str);
@@ -14,8 +16,10 @@ String.prototype.hasStr = function(str) {
 // ここで記述されている内容をデフォルト値として、下の関数内の変更が適用されます
 var encSettings = {
     avs_options       : '-y4mp',
-    qsvenc_options    : '--y4m --fallback-rc --dar 16:9 -u best --scenechange --profile Main ',
     handbrake_options : '-e qsv_h264 -4 -f mp4 --h264-profile=main --loose-anamorphic --modulus 4 -a 1,2 -E copy ' +
+    qsvenc_options    : (config.QSVENC_USE_AVS ? '--y4m ' : '') +
+                        '--fallback-rc --dar 16:9 -u best --scenechange --profile auto ',
+    handbrake_options : '-e qsv_h264 -4 -f mp4 --h264-profile=auto --loose-anamorphic --modulus 4 -a 1,2 -E copy ' +
                         '--detelecine="1:1:4:4:0:0:-1" --decomb="7:2:6:9:80:16:16:10:20:20:4:2:50:24:1:-1" --verbose=1 ',
     start_cut_sec     : '0.0',    // 先頭何秒をカットするか(この値をエンコード時のカットとチャプター・音声のカットに使用します)
     chapter_skip_sec  : '0.0',    // エンコード後の先頭何秒間をチャプター設定しないようにするか（チャプターに使用）

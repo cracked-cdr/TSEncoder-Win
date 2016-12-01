@@ -17,11 +17,13 @@ var config         = require('../config/config');
 var logger         = require('log4js').getLogger();
 
 // エンコードを実行
-module.exports.encodeTS = function(filePath, serviceName) {
+module.exports.encodeTS = function(filePath, serviceName, encConf) {
     logger.info('エンコードを開始します');
 
     var fileName = pathinfo(filePath).basename;
-    var encConf = encode_setting.createEncodeSettings(filePath, fileName, serviceName);
+    if (!encConf) {
+        encConf = encode_setting.createEncodeSettings(filePath, fileName, serviceName);
+    }
     logger.info(encConf);
     
     try {
@@ -47,16 +49,16 @@ module.exports.encodeTS = function(filePath, serviceName) {
 function encodeByQSVEnc(filePath, mp4Path, encConf) {
     var execStr = '';
     if (config.QSVENC_USE_AVS) {
-        var avsPath = avisynth.generateAVS(filePath);
+        var avsPath = avisynth.generateAVS(filePath, encConf.start_cut_sec);
         execStr += `"${exe_path.AVS2PIPEMOD_PATH}" ${encConf.avs_options} "${avsPath}" | "${exe_path.QSVENC_PATH}" -i - `;
 
     } else {
         execStr += `"${exe_path.QSVENC_PATH}" -i "${filePath}" `;
+        if (parseFloat(encConf.start_cut_sec) != 0.0) {
+            execStr += `--seek ${encConf.start_cut_sec} `;
+        }
     }
     execStr += `-o "${mp4Path}" ${encConf.qsvenc_options} `;
-    if (parseFloat(encConf.start_cut_sec) != 0.0) {
-        execStr += `--seek ${encConf.start_cut_sec} `;
-    }
 
     logger.debug(execStr);
 

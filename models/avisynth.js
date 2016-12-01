@@ -12,8 +12,9 @@ var config   = require('../config/config');
 var logger   = require('log4js').getLogger();
 
 // AVSファイルを作成する。戻り値はAVSファイルのパス
-module.exports.generateAVS = function(filePath) {
+module.exports.generateAVS = function(filePath, startCutSec) {
 
+    var trimSec = startCutSec ? startCutSec : '0';
     // AVSテキスト
     var avs = `# 処理開始
 source = "${filePath}"
@@ -23,6 +24,10 @@ LoadPlugin("${exe_path.LSMASH_DLL_PATH}")
 video = LWLibavVideoSource(source, dr=true, repeat=true, dominance=1).AssumeFPS(30000, 1001)
 video = (video.height == 738)  ? video.Crop(0, 0, 0 , -18) : video
 video = (video.height == 1088) ? video.Crop(0, 0, 0 , -8)  : video
+
+# Trimするフレームは四捨五入した整数
+trFrame = Round(FrameRate(video) * ${trimSec})
+video = trFrame == 0 ? video : Trim(video, trFrame, 0)
 
 video = IT(video, fps=24, ref="TOP", blend=false)
 
