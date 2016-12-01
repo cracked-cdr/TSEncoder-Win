@@ -6,6 +6,7 @@
  */
 
 var fs       = require('fs');
+var iconv    = require('iconv-lite');
 var exe_path = require('../config/exe-path');
 var config   = require('../config/config');
 var logger   = require('log4js').getLogger();
@@ -30,7 +31,7 @@ return video
 
     try {
         var avsPath = filePath + '.avs';
-        fs.writeFileSync(avsPath, avs);
+        fs.writeFileSync(avsPath, iconv.encode(avs, 'shift_jis'));
         logger.info('AVSファイルを作成しました');
         return avsPath;
     } catch (err) {
