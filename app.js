@@ -11,12 +11,15 @@ var util           = require('util');
 var pathinfo       = require('pathinfo');
 var glob           = require('glob');
 var chapter        = require('./models/chapter');
+var demux          = require('./models/demux');
+var mux            = require('./models/mux');
 var scramble       = require('./models/scramble');
 var encode         = require('./models/encode');
 var config         = require('./config/config');
 var encode_setting = require('./config/encode-setting');
 var log4js         = require('log4js');
 var logger         = log4js.getLogger();
+var avisynth       = require('./models/avisynth');
 
 var argv = process.argv;
 
@@ -97,12 +100,15 @@ if (scrambles > 0) {
 // チャプター作成
 var chapterPath = chapter.createChapter(filePath, config.CHAPTER_FOLDER, serviceName);
 
+// エンコードセッティング
+var encodeSettings = encode_setting.createEncodeSettings(filePath, fileName, serviceName);
+
 // エンコード実行
 var mp4Path = null;
 var tryCnt;
 for (tryCnt = 0; tryCnt < config.TRY_ENCODE_MAX; tryCnt++) {
 
-    mp4Path = encode.encodeTS(filePath, serviceName);
+    mp4Path = encode.encodeTS(filePath, serviceName, encodeSettings);
 
     if (!mp4Path || fs.statSync(mp4Path).size < config.ERR_ENCODE_FILE_SIZE) {
         logger.info('エラーファイルが作成されたので再試行します');
@@ -117,8 +123,14 @@ if (!mp4Path || fs.statSync(mp4Path).size < config.ERR_ENCODE_FILE_SIZE) {
 
 // チャプター埋め込み
 if (chapterPath) {
-    var settings = encode_setting.encSettings;
-    chapter.embedChapter(mp4Path, chapterPath, settings.start_at_sec, settings.chapter_skip_sec);
+    chapter.embedChapter(mp4Path, chapterPath, encodeSettings.start_cut_sec, encodeSettings.chapter_skip_sec);
+}
+
+// QSVEncC使用時のみ音声のDemux -> mp4にMux
+if (config.ENCODE_APPLICATION == 1) {
+    if (demuxPaths = demux.demuxTsParser(filePath, encodeSettings.start_cut_sec)) {
+        mux.muxForMp4(demuxPaths, mp4Path);
+    }
 }
 
 // 処理済みフォルダに録画ファイルを移動
