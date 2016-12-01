@@ -5,16 +5,16 @@
  * Created by cracked-cdr
  */
 
-var fs            = require('fs');
-var glob          = require('glob');
-var pathinfo      = require('pathinfo');
-var child_process = require('child_process');
-var exe_path      = require('../config/exe-path');
-var config        = require('../config/config');
-var logger        = require('log4js').getLogger();
+var fs             = require('fs');
+var glob           = require('glob');
+var pathinfo       = require('pathinfo');
+var child_process  = require('child_process');
+var exe_path       = require('../config/exe-path');
+var config         = require('../config/config');
+var logger         = require('log4js').getLogger();
 
 // ts_parserを利用して音声を分離
-module.exports.demuxTsParser = function(filePath) {
+module.exports.demuxTsParser = function(filePath, startCutSec) {
     logger.info('TSファイルから音声を分離します');
 
     var info = pathinfo(filePath);
@@ -31,21 +31,29 @@ module.exports.demuxTsParser = function(filePath) {
 
     var aacs = glob.sync(info.dirname.normalize() + '/*ms.aac');
     aacs.forEach(function(aac) {
-        applyDelay(aac);
+        var aacName = pathinfo(aac).filename;
+        var delay = null;
+        var m = aacName.match(/^.*DELAY (-?[0-9]+)ms.aac$/);
+        if (m && m.length > 1) {
+            delay = parseInt(m[1]) + parseInt(parseFloat(startCutSec) * 1000);
+        }
+        applyDelay(aac, delay);
     });
 
     logger.info('音声分離とDelay適用が終了しました');
+
+    return aacs;
 };
 
 // fawcl.exeを利用してディレイを適用
-function applyDelay(aacPath) {
-    logger.debug('Apply delay: ' + aacPath);
+function applyDelay(aacPath, delayMs) {
+    logger.debug('Apply delay ' + delayMs + 'ms: ' + aacPath );
 
     var wavPath = aacPath + '.wav';
 
     // AAC -> WAV
-    var execStr = 'start /wait /min '
-        + config.FAWCL_PRIORITY + ' "" "' + exe_path.FAWCL_PATH + '" "' + aacPath + '" "' + wavPath + '"';
+    var d = delayMs ? ("-d" + delayMs) : "";
+    var execStr = `start /wait /min ${config.FAWCL_PRIORITY} "" "${exe_path.FAWCL_PATH}" ${d} "${aacPath}" "${wavPath}"`;
 
     logger.debug(execStr);
 
