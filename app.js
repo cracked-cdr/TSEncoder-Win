@@ -121,16 +121,16 @@ if (!mp4Path || fs.statSync(mp4Path).size < config.ERR_ENCODE_FILE_SIZE) {
     return;
 }
 
-// チャプター埋め込み
-if (chapterPath) {
-    chapter.embedChapter(mp4Path, chapterPath, encodeSettings.start_cut_sec, encodeSettings.chapter_skip_sec);
-}
-
 // QSVEncC使用時のみ音声のDemux -> mp4にMux
 if (config.ENCODE_APPLICATION == 1) {
     if (demuxPaths = demux.demuxTsParser(filePath, encodeSettings.start_cut_sec)) {
         mux.muxForMp4(demuxPaths, mp4Path);
     }
+}
+
+// チャプター埋め込み
+if (chapterPath) {
+    chapter.embedChapter(mp4Path, chapterPath, encodeSettings.start_cut_sec, encodeSettings.chapter_skip_sec);
 }
 
 // 処理済みフォルダに録画ファイルを移動
