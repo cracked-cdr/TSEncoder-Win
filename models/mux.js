@@ -17,10 +17,11 @@ module.exports.muxForMp4 = function(demuxPaths, mp4Path) {
 
     var addAac = '';
     demuxPaths.forEach(function(aac) {
-        addAac += ` -add "${aac} `;
+        addAac += `-add "${aac}" `;
     });
 
     var execStr = `"${exe_path.MP4BOX_PATH}" "${mp4Path}" -tmp "${config.MP4_FOLDER}" ${addAac}`;
+    logger.debug(execStr);
     child_process.execSync(`start /wait /min ${config.MP4BOX_PRIORITY} "" ${execStr}`);
 
     try {
