@@ -12,9 +12,9 @@ var config   = require('../config/config');
 var logger   = require('log4js').getLogger();
 
 // AVSファイルを作成する。戻り値はAVSファイルのパス
-module.exports.generateAVS = function(filePath, startCutSec) {
+module.exports.generateAVS = function(filePath, encodeSettings) {
 
-    var trimSec = startCutSec ? startCutSec : '0';
+    var trimSec = encodeSettings.start_cut_sec ? encodeSettings.start_cut_sec : '0';
     // AVSテキスト
     var avs = `# 処理開始
 source = "${filePath}"
@@ -29,7 +29,7 @@ video = (video.height == 1088) ? video.Crop(0, 0, 0 , -8)  : video
 trFrame = Round(FrameRate(video) * ${trimSec})
 video = trFrame == 0 ? video : Trim(video, trFrame, 0)
 
-video = IT(video, fps=24, ref="TOP", blend=false)
+video = IT(video, ${encodeSettings.fps ? 'fps='+encodeSettings.fps+',' : ''} ref="TOP", blend=false)
 
 return video
 # 処理終了`;

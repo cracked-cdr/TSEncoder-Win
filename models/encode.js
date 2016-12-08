@@ -49,7 +49,7 @@ module.exports.encodeTS = function(filePath, serviceName, encConf) {
 function encodeByQSVEnc(filePath, mp4Path, encConf) {
     var execStr = '';
     if (config.QSVENC_USE_AVS) {
-        var avsPath = avisynth.generateAVS(filePath, encConf.start_cut_sec);
+        var avsPath = avisynth.generateAVS(filePath, encConf);
         execStr += `"${exe_path.AVS2PIPEMOD_PATH}" ${encConf.avs_options} "${avsPath}" | "${exe_path.QSVENC_PATH}" -i - `;
 
     } else {
