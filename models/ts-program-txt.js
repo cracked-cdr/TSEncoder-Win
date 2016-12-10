@@ -50,20 +50,22 @@ module.exports.parse = function(filePath) {
     });
 
     // 情報該当位置の配列範囲を取り出し
-    var detail            = program.slice(multiLineInfo.detail, multiLineInfo.genre - 1);
+    var detail            = multiLineInfo.detail ? program.slice(multiLineInfo.detail, multiLineInfo.genre - 1) : null;
     var genre             = program.slice(multiLineInfo.genre, multiLineInfo.video);
     var video             = program.slice(multiLineInfo.video, multiLineInfo.audio);
-    var audio             = program.slice(multiLineInfo.audio, multiLineInfo.serviceType);
+    var audio             = program.slice(multiLineInfo.audio, (multiLineInfo.serviceType ? multiLineInfo.serviceType : multiLineInfo.originalNetworkID));
     var serviceType       = program[multiLineInfo.serviceType];
     var originalNetworkId = program[multiLineInfo.originalNetworkID];
     var transportStreamId = program[multiLineInfo.transportStreamID];
     var serviceId         = program[multiLineInfo.serviceId];
     var eventId           = program[multiLineInfo.eventId];
 
-    result.detail       = detail.join('\n').replace(/\n\n$/, '');
-    result.genre        = genre.filter(function(elem) { return elem; });
-    result.video        = video.join('\n').replace('映像 : ', '');
-    result.audio        = audio.join('\n').replace('音声 : ', '').replace(/\n$/, '');
+    if (detail) {
+        result.detail = detail.join('\n').replace(/\n\n$/, '');
+    }
+    result.genre = genre.filter(function(elem) { return elem; });
+    result.video = video.join('\n').replace('映像 : ', '');
+    result.audio = audio.join('\n').replace('音声 : ', '').replace(/\n$/, '');
     if (serviceType) {
         result.serviceType = serviceType.replace(/\n\n$/, '');
     }
