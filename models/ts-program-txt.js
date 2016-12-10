@@ -31,7 +31,7 @@ module.exports.parse = function(filePath) {
     var multiLineInfo = {};
     program.forEach(function(line, i) {
         switch (i)  {
-            case 0: result.broadcastDateTime = line; break;
+            case 0: result.broadcastDatetime = line; break;
             case 1: result.serviceName = line; break;
             case 2: result.title = line; break;
             case 4: result.subTitle = line; break;
