@@ -35,7 +35,8 @@ module.exports.demuxTsParser = function(filePath, startCutSec) {
         var delay = null;
         var m = aacName.match(/^.*DELAY (-?[0-9]+)ms.aac$/);
         if (m && m.length > 1) {
-            delay = parseInt(m[1]) - parseInt(parseFloat(startCutSec) * 1000);
+            // BSと地上波で適したdelay値が違うので中間をとる(うちの環境では)
+            delay = Math.round(parseFloat(m[1]) * 0.8) - parseInt(parseFloat(startCutSec) * 1000);
         }
         applyDelay(aac, delay);
     });
