@@ -10,16 +10,17 @@ var path           = require('path');
 var util           = require('util');
 var pathinfo       = require('pathinfo');
 var glob           = require('glob');
+var ts_program_txt = require('./models/ts-program-txt');
 var chapter        = require('./models/chapter');
 var demux          = require('./models/demux');
 var mux            = require('./models/mux');
 var scramble       = require('./models/scramble');
+var avisynth       = require('./models/avisynth');
 var encode         = require('./models/encode');
 var config         = require('./config/config');
 var encode_setting = require('./config/encode-setting');
 var log4js         = require('log4js');
 var logger         = log4js.getLogger();
-var avisynth       = require('./models/avisynth');
 
 var argv = process.argv;
 
@@ -64,6 +65,17 @@ var noExtFileName = info.basename;
 var scrambles = argv[3] ? argv[3] : 0;
 
 var serviceName = argv[4] ? argv[4] : null;
+var tsId = argv[5] ? argv[5] : null;
+
+var tsProgram = ts_program_txt.parse(filePath);
+if (tsProgram) {
+    if (!serviceName) {
+        serviceName = tsProgram.serviceName;
+    }
+    if (!tsId) {
+        tsId = tsProgram.transportStreamID10;
+    }
+}
 
 logger.info('-- 処理を開始します: ' + filePath + ', Scrambles: ' + scrambles);
 
@@ -123,7 +135,7 @@ if (!mp4Path || fs.statSync(mp4Path).size < config.ERR_ENCODE_FILE_SIZE) {
 
 // QSVEncC使用時のみ音声のDemux -> mp4にMux
 if (config.ENCODE_APPLICATION == 1) {
-    if (demuxPaths = demux.demuxTsParser(filePath, encodeSettings.start_cut_sec)) {
+    if (demuxPaths = demux.demuxTsParser(filePath, encodeSettings.start_cut_sec, tsId)) {
         mux.muxForMp4(demuxPaths, mp4Path);
     }
 }

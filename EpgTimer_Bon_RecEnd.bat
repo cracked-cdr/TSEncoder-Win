@@ -10,6 +10,7 @@ set BASE_PATH=%~dp0
 set FILE_PATH=$FilePath$
 set SCRAMBLES=$Scrambles$
 set SERVICE_NAME=$ServiceNameNEW$
+set TS_ID=$TSID10$
 
 echo "%FILE_PATH%"の録画後処理を開始します
 
@@ -19,7 +20,7 @@ if not exist "%FILE_PATH%" (
 )
 
 rem # nodeが見つからない場合は node の部分をnode.exeのフルパスに置き換えてください
-start /wait /NORMAL /min "" "node" "%BASE_PATH%\app.js" "%FILE_PATH%" %SCRAMBLES% %SERVICE_NAME%
+start /wait /NORMAL /min "" "node" "%BASE_PATH%\app.js" "%FILE_PATH%" %SCRAMBLES% %SERVICE_NAME% %TS_ID%
 
 echo "%FILE_PATH%"の録画後処理を終了しました
 
