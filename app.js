@@ -63,17 +63,12 @@ var fileName = info.filename;
 var noExtFileName = info.basename;
 
 var scrambles = argv[3] ? argv[3] : 0;
-
 var serviceName = argv[4] ? argv[4] : null;
-var tsId = argv[5] ? argv[5] : null;
 
 var tsProgram = ts_program_txt.parse(filePath);
 if (tsProgram) {
     if (!serviceName) {
         serviceName = tsProgram.serviceName;
-    }
-    if (!tsId) {
-        tsId = tsProgram.transportStreamID10;
     }
 }
 
@@ -135,7 +130,7 @@ if (!mp4Path || fs.statSync(mp4Path).size < config.ERR_ENCODE_FILE_SIZE) {
 
 // QSVEncC使用時のみ音声のDemux -> mp4にMux
 if (config.ENCODE_APPLICATION == 1) {
-    if (demuxPaths = demux.demuxTsParser(filePath, encodeSettings.start_cut_sec, tsId)) {
+    if (demuxPaths = demux.demuxTsParser(filePath, encodeSettings.start_cut_sec)) {
         mux.muxForMp4(demuxPaths, mp4Path);
     }
 }

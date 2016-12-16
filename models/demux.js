@@ -14,7 +14,7 @@ var config         = require('../config/config');
 var logger         = require('log4js').getLogger();
 
 // ts_parserを利用して音声を分離
-module.exports.demuxTsParser = function(filePath, startCutSec, tsId) {
+module.exports.demuxTsParser = function(filePath, startCutSec) {
     logger.info('TSファイルから音声を分離します');
 
     var info = pathinfo(filePath);
@@ -35,24 +35,9 @@ module.exports.demuxTsParser = function(filePath, startCutSec, tsId) {
         var delay = null;
         var m = aacName.match(/^.*DELAY (-?[0-9]+)ms.aac$/);
         if (m && m.length > 1) {
-            // 作者環境では地デジとBSでTrim時に最適なディレイ値が異なるのでTransportStreamIDで判別・適用
-            var baseDelay = Math.round(parseFloat(m[1]) * 0.8); // 地デジ・BSの中庸値
-            if (tsId) {
-                var iTsId = parseInt(tsId);
-                if (iTsId < 20000) {
-                    // BS
-                    baseDelay = parseInt(m[1]);
-
-                } else if (iTsId < 30000) {
-                    // CS
-                    baseDelay = parseInt(m[1]);
-
-                } else {
-                    // 地デジ
-                    baseDelay = Math.round(parseFloat(m[1]) * 0.5);
-                }
-            }
-            delay = baseDelay - parseInt(parseFloat(startCutSec) * 1000);
+            delay = parseInt(m[1]) - parseInt(parseFloat(startCutSec) * 1000);
+        } else {
+            delay = parseInt(parseFloat(startCutSec) * 1000);
         }
         applyDelay(aac, delay);
     });
