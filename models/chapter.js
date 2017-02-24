@@ -5,14 +5,16 @@
  * Created by cracked-cdr
  */
 
-var fs            = require('fs');
-var path          = require('path');
-var child_process = require('child_process');
-var pathinfo      = require('pathinfo');
-var sprintf       = require('sprintf-js').sprintf;
-var exe_path      = require('../config/exe-path');
-var config        = require('../config/config');
-var logger        = require('log4js').getLogger();
+'use strict';
+
+const fs            = require('fs');
+const path          = require('path');
+const child_process = require('child_process');
+const pathinfo      = require('pathinfo');
+const sprintf       = require('sprintf-js').sprintf;
+const exe_path      = require('../config/exe-path');
+const config        = require('../config/config');
+const logger        = require('log4js').getLogger();
 
 // チャプターファイルの作成
 module.exports.createChapter = function(filePath, chapterDir, serviceName) {
@@ -27,10 +29,10 @@ module.exports.createChapter = function(filePath, chapterDir, serviceName) {
         return;
     }
 
-    var info     = pathinfo(filePath);
-    var fileName = info.filename;
+    let info     = pathinfo(filePath);
+    let fileName = info.filename;
 
-    var chapterFilePath = path.join(chapterDir, fileName + '.chapters.txt');
+    let chapterFilePath = path.join(chapterDir, fileName + '.chapters.txt');
 
     try {
         if (fs.statSync(chapterFilePath).isFile) {
@@ -52,8 +54,8 @@ module.exports.createChapter = function(filePath, chapterDir, serviceName) {
 
     // ロゴデータとパラメータファイルの検索。
     // 放送局名が渡されていればによる検索を先に行い、ファイルが見つからない場合はファイル名で再度検索
-    var lgdPath;
-    var autoTunePath;
+    let lgdPath;
+    let autoTunePath;
     if (serviceName) {
         lgdPath = findLgdPath(serviceName);
         autoTunePath = findAutoTuneParamPath(serviceName);
@@ -77,7 +79,7 @@ module.exports.createChapter = function(filePath, chapterDir, serviceName) {
     logger.debug('Use lgd: ' + lgdPath);
     logger.debug('Use param: ' + autoTunePath);
 
-    var execStr = '"' + exe_path.LOGOGUILLO_PATH
+    let execStr = '"' + exe_path.LOGOGUILLO_PATH
                 + '" -video "' + filePath
                 + '" -lgd "' + lgdPath
                 + '" -avs2x "' + exe_path.AVS2PIPEMOD_PATH
@@ -127,12 +129,12 @@ module.exports.embedChapter = function(mp4Path, chapterPath, startAtSec, chapter
     chapterSkipSec = chapterSkipSec || 0.0;
 
     // チャプターファイルを指定時間ずらす
-    var slideChapterPath = timeSlide(chapterPath, startAtSec, chapterSkipSec);
+    let slideChapterPath = timeSlide(chapterPath, startAtSec, chapterSkipSec);
     if (!fs.statSync(slideChapterPath)) {
         slideChapterPath = chapterPath;
     }
 
-    var execStr = '"' + exe_path.MP4BOX_PATH
+    let execStr = '"' + exe_path.MP4BOX_PATH
         + '" "' + mp4Path
         + '" -chap "' + slideChapterPath
         + '" -tmp "' + config.MP4_FOLDER + '"';
@@ -144,8 +146,8 @@ module.exports.embedChapter = function(mp4Path, chapterPath, startAtSec, chapter
 
 // ファイル名から放送局を探し、見つかった.lgdファイルパスを返却
 function findLgdPath(searchName) {
-    var bsDir  = path.join(exe_path.LOGO_PATH, 'bs');
-    var dtvDir = path.join(exe_path.LOGO_PATH, 'dtv');
+    let bsDir  = path.join(exe_path.LOGO_PATH, 'bs');
+    let dtvDir = path.join(exe_path.LOGO_PATH, 'dtv');
 
     logger.debug('LOGO_BS: ' + bsDir);
     logger.debug('LOGO_DTV: ' + dtvDir);
@@ -153,7 +155,7 @@ function findLgdPath(searchName) {
     // ファイル名の部分検索で見ているためBSを先に検索する（地デジを先に行うとBS"○○"に誤爆する）
     try {
         if (fs.statSync(bsDir)) {
-            var logoPath = searchPath(bsDir, '.lgd', searchName);
+            let logoPath = searchPath(bsDir, '.lgd', searchName);
             if (logoPath) {
                 return path.join(bsDir, logoPath);
             }
@@ -170,7 +172,7 @@ function findLgdPath(searchName) {
     // 地デジ
     try {
         if (fs.statSync(dtvDir)) {
-            var logoPath = searchPath(dtvDir, '.lgd', searchName);
+            let logoPath = searchPath(dtvDir, '.lgd', searchName);
             if (logoPath) {
                 return path.join(dtvDir, logoPath);
             }
@@ -189,8 +191,8 @@ function findLgdPath(searchName) {
 
 //ファイル名から番組名を探し、対応した.lgd.autoTune.paramファイルパスを取得する
 function findAutoTuneParamPath(searchName) {
-    var bsDir  = path.join(exe_path.PARAM_PATH, 'bs');
-    var dtvDir = path.join(exe_path.PARAM_PATH, 'dtv');
+    let bsDir  = path.join(exe_path.PARAM_PATH, 'bs');
+    let dtvDir = path.join(exe_path.PARAM_PATH, 'dtv');
 
     logger.debug('PARAM_BS: ' + bsDir);
     logger.debug('PARAM_DTV: ' + dtvDir);
@@ -198,7 +200,7 @@ function findAutoTuneParamPath(searchName) {
     // ファイル名の部分検索で見ているためBSを先に検索する（地デジを先に行うとBS"○○"に誤爆する）
     try {
         if (fs.statSync(bsDir)) {
-            var logoPath = searchPath(bsDir, '.lgd.autoTune.param', searchName);
+            let logoPath = searchPath(bsDir, '.lgd.autoTune.param', searchName);
             if (logoPath) {
                 return path.join(bsDir, logoPath);
             }
@@ -215,7 +217,7 @@ function findAutoTuneParamPath(searchName) {
     // 地デジ
     try {
         if (fs.statSync(dtvDir)) {
-            var logoPath = searchPath(dtvDir, '.lgd.autoTune.param', searchName);
+            let logoPath = searchPath(dtvDir, '.lgd.autoTune.param', searchName);
             if (logoPath) {
                 return path.join(dtvDir, logoPath);
             }
@@ -231,7 +233,7 @@ function findAutoTuneParamPath(searchName) {
 
     // ファイルが見つからない場合は default.lgd.autoTune.paramを検索
     try {
-        var defLogoPath = path.join(exe_path.PARAM_PATH, 'default.lgd.autoTune.param');
+        let defLogoPath = path.join(exe_path.PARAM_PATH, 'default.lgd.autoTune.param');
         if (fs.statSync(defLogoPath)) {
             return defLogoPath;
         }
@@ -250,10 +252,10 @@ function findAutoTuneParamPath(searchName) {
 //     ext   検索ディレクトリ内の拡張子
 //     fname 部分一致検索用のファイル名
 function searchPath(dir, ext, fname) {
-    var find = null;
-    var files = fs.readdirSync(dir);
-    for (var i=0; i < files.length; i++) {
-        var f = files[i];
+    let find = null;
+    let files = fs.readdirSync(dir);
+    for (let i=0; i < files.length; i++) {
+        let f = files[i];
         if (fname.indexOf(f.replace(ext, '')) != -1) {
             find = f;
             break;
@@ -273,21 +275,21 @@ function timeSlide(filePath, slideTime, skipTime, chapName) {
     skipTime  = skipTime || 0.0;
     chapName  = chapName || 'Chapter';
 
-    var chapArray = fs.readFileSync(filePath, 'utf8').split('\n');
-    var slidedChapters = '';
-    var i = 0;
+    let chapArray = fs.readFileSync(filePath, 'utf8').split('\n');
+    let slidedChapters = '';
+    let i = 0;
     
     chapArray.forEach(function(chap) {
-        var matches = chap.match(/\d{2}:\d{2}:\d{2}.\d{3}/);
+        let matches = chap.match(/\d{2}:\d{2}:\d{2}.\d{3}/);
         if (matches) {
-            var tmp = matches[0];
+            let tmp = matches[0];
 
             tmp = tmp.replace(/:/g, '');
 
             // 時分秒を秒数の合計に直す
-            var hour   = Math.floor(tmp.substr(0, 2) * 3600);
-            var minute = Math.floor(tmp.substr(2, 2) * 60);
-            var second = parseFloat(tmp.substr(4));
+            let hour   = Math.floor(tmp.substr(0, 2) * 3600);
+            let minute = Math.floor(tmp.substr(2, 2) * 60);
+            let second = parseFloat(tmp.substr(4));
             tmp = hour + minute + second;
 
             // ファイルに記載された秒数 - コマンドライン引数で渡された秒数
@@ -310,8 +312,8 @@ function timeSlide(filePath, slideTime, skipTime, chapName) {
         }
     });
 
-    var info = pathinfo(filePath);
-    var newFilePath = path.join(info['dirname'], 'slide_' + info['filename']);
+    let info = pathinfo(filePath);
+    let newFilePath = path.join(info['dirname'], 'slide_' + info['filename']);
     fs.writeFileSync(newFilePath, slidedChapters, 'utf8');
 
     return newFilePath;

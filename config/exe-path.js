@@ -5,9 +5,11 @@
  * Created by cracked-cdr
  */
 
-var path     = require('path');
-var pathinfo = require('pathinfo');
-var root     = path.join(pathinfo(process.argv[1]).dirname, 'tools');
+'use strict';
+
+const path     = require('path');
+const pathinfo = require('pathinfo');
+const root     = path.join(pathinfo(process.argv[1]).dirname, 'tools');
 
 /*
  その他の場所にツールがある場合、'=' 以降を削除し、絶対パスで文字列指定してください。

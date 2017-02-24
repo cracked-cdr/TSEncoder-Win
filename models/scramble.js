@@ -5,18 +5,20 @@
  * Created by cracked-cdr
  */
 
-var path          = require('path');
-var child_process = require('child_process');
-var pathinfo      = require('pathinfo');
-var exe_path      = require('../config/exe-path');
-var config        = require('../config/config');
-var logger        = require('log4js').getLogger();
+'use strict';
+
+const path          = require('path');
+const child_process = require('child_process');
+const pathinfo      = require('pathinfo');
+const exe_path      = require('../config/exe-path');
+const config        = require('../config/config');
+const logger        = require('log4js').getLogger();
 
 // スクランブル解除
 module.exports.decode = function(filePath) {
     logger.info('スクランブル解除を行います');
 
-    var execStr = 'start /wait /min '
+    let execStr = 'start /wait /min '
         + config.MULTI2DEC_PRIORITY + ' "" "' + exe_path.MULTI2DEC_PATH + '" /D "' + filePath
         + '"';
     
@@ -24,7 +26,7 @@ module.exports.decode = function(filePath) {
     
     child_process.execSync(execStr);
 
-    var info = pathinfo(filePath);
-    var decPath = path.join(info.dirname, info.basename + '_dec.ts');
+    let info = pathinfo(filePath);
+    let decPath = path.join(info.dirname, info.basename + '_dec.ts');
     return decPath;
 };

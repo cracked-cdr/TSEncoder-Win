@@ -5,22 +5,24 @@
  * Created by cracked-cdr
  */
 
-var fs             = require('fs');
-var path           = require('path');
-var pathinfo       = require('pathinfo');
-var iconv          = require('iconv-lite');
-var child_process  = require('child_process');
-var avisynth       = require('./avisynth');
-var encode_setting = require('../config/encode-setting');
-var exe_path       = require('../config/exe-path');
-var config         = require('../config/config');
-var logger         = require('log4js').getLogger();
+'use strict';
+
+const fs             = require('fs');
+const path           = require('path');
+const pathinfo       = require('pathinfo');
+const iconv          = require('iconv-lite');
+const child_process  = require('child_process');
+const avisynth       = require('./avisynth');
+const encode_setting = require('../config/encode-setting');
+const exe_path       = require('../config/exe-path');
+const config         = require('../config/config');
+const logger         = require('log4js').getLogger();
 
 // エンコードを実行
 module.exports.encodeTS = function(filePath, serviceName, encConf) {
     logger.info('エンコードを開始します');
 
-    var fileName = pathinfo(filePath).basename;
+    let fileName = pathinfo(filePath).basename;
     if (!encConf) {
         encConf = encode_setting.createEncodeSettings(filePath, fileName, serviceName);
     }
@@ -35,7 +37,7 @@ module.exports.encodeTS = function(filePath, serviceName, encConf) {
         }
     }
 
-    var mp4Path = path.join(config.MP4_FOLDER, fileName + '.mp4');
+    let mp4Path = path.join(config.MP4_FOLDER, fileName + '.mp4');
 
     switch (config.ENCODE_APPLICATION) {
         case 1:
@@ -47,9 +49,9 @@ module.exports.encodeTS = function(filePath, serviceName, encConf) {
 
 // QSVEnc(+Avisynth)によるエンコード処理
 function encodeByQSVEnc(filePath, mp4Path, encConf) {
-    var execStr = '';
+    let execStr = '';
     if (config.QSVENC_USE_AVS) {
-        var avsPath = avisynth.generateAVS(filePath, encConf);
+        let avsPath = avisynth.generateAVS(filePath, encConf);
         execStr += `"${exe_path.AVS2PIPEMOD_PATH}" ${encConf.avs_options} "${avsPath}" | "${exe_path.QSVENC_PATH}" -i - `;
 
     } else {
@@ -62,7 +64,7 @@ function encodeByQSVEnc(filePath, mp4Path, encConf) {
 
     logger.debug(execStr);
 
-    var tmpBat = path.join(pathinfo(process.argv[1]).dirname, 'tmp.bat');
+    let tmpBat = path.join(pathinfo(process.argv[1]).dirname, 'tmp.bat');
     try {
         fs.writeFileSync(tmpBat, iconv.encode(execStr + '\nexit', 'shift_jis'));
     } catch (err) {
@@ -81,7 +83,7 @@ function encodeByQSVEnc(filePath, mp4Path, encConf) {
 
 // Handbrakeによるエンコード処理
 function encodeByHandbrake(filePath, mp4Path, encConf) {
-    var execStr = `"${exe_path.HANDBRAKE_PATH}" -i "${filePath}" -o "${mp4Path}" ${encConf.handbrake_options} `;
+    let execStr = `"${exe_path.HANDBRAKE_PATH}" -i "${filePath}" -o "${mp4Path}" ${encConf.handbrake_options} `;
     if (parseFloat(encConf.start_cut_sec) != 0.0) {
         execStr += `--start-at duration:${encConf.start_cut_sec} `;
     }

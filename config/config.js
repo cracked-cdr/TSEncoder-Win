@@ -5,6 +5,8 @@
  * Created by cracked-cdr
  */
 
+'use strict';
+
 /*
  パスの表記はフォルダの区切り(\)を 2つ記述する必要があります
  (C:\foo\bar -> C:\\foo\\bar)

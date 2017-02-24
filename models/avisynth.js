@@ -5,18 +5,20 @@
  * Created by cracked-cdr
  */
 
-var fs       = require('fs');
-var iconv    = require('iconv-lite');
-var exe_path = require('../config/exe-path');
-var config   = require('../config/config');
-var logger   = require('log4js').getLogger();
+'use strict';
+
+const fs       = require('fs');
+const iconv    = require('iconv-lite');
+const exe_path = require('../config/exe-path');
+const config   = require('../config/config');
+const logger   = require('log4js').getLogger();
 
 // AVSファイルを作成する。戻り値はAVSファイルのパス
 module.exports.generateAVS = function(filePath, encodeSettings) {
 
-    var trimSec = encodeSettings.start_cut_sec ? encodeSettings.start_cut_sec : '0';
+    let trimSec = encodeSettings.start_cut_sec ? encodeSettings.start_cut_sec : '0';
     // AVSテキスト
-    var avs = `# 処理開始
+    let avs = `# 処理開始
 source = "${filePath}"
 LoadPlugin("${exe_path.IT_DLL_PATH}")
 LoadPlugin("${exe_path.LSMASH_DLL_PATH}")
@@ -35,7 +37,7 @@ return video
 # 処理終了`;
 
     try {
-        var avsPath = filePath + '.avs';
+        let avsPath = filePath + '.avs';
         fs.writeFileSync(avsPath, iconv.encode(avs, 'shift_jis'));
         logger.info('AVSファイルを作成しました');
         return avsPath;

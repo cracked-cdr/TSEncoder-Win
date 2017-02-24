@@ -5,27 +5,29 @@
  * Created by cracked-cdr
  */
 
-var fs             = require('fs');
-var path           = require('path');
-var util           = require('util');
-var pathinfo       = require('pathinfo');
-var glob           = require('glob');
-var ts_program_txt = require('./models/ts-program-txt');
-var chapter        = require('./models/chapter');
-var demux          = require('./models/demux');
-var mux            = require('./models/mux');
-var scramble       = require('./models/scramble');
-var avisynth       = require('./models/avisynth');
-var encode         = require('./models/encode');
-var config         = require('./config/config');
-var encode_setting = require('./config/encode-setting');
-var log4js         = require('log4js');
-var logger         = log4js.getLogger();
+'use strict';
 
-var argv = process.argv;
+const fs             = require('fs');
+const path           = require('path');
+const util           = require('util');
+const pathinfo       = require('pathinfo');
+const glob           = require('glob');
+const ts_program_txt = require('./models/ts-program-txt');
+const chapter        = require('./models/chapter');
+const demux          = require('./models/demux');
+const mux            = require('./models/mux');
+const scramble       = require('./models/scramble');
+const avisynth       = require('./models/avisynth');
+const encode         = require('./models/encode');
+const config         = require('./config/config');
+const encode_setting = require('./config/encode-setting');
+const log4js         = require('log4js');
+const logger         = log4js.getLogger();
+
+const argv = process.argv;
 
 // ロガー
-var jsPathInfo = pathinfo(argv[1]);
+const jsPathInfo = pathinfo(argv[1]);
 logger.setLevel('INFO');
 log4js.configure({
     appenders: [
@@ -45,7 +47,7 @@ if (argv.length < 3) {
 }
 
 // TS存在チェック
-var filePath = argv[2];
+let filePath = argv[2];
 try {
     fs.statSync(filePath);
 } catch (err) {
@@ -57,15 +59,15 @@ try {
     return;
 }
 
-var info = pathinfo(filePath);
-var folderPath = info.dirname;
-var fileName = info.filename;
-var noExtFileName = info.basename;
+let info = pathinfo(filePath);
+let folderPath = info.dirname;
+let fileName = info.filename;
+let noExtFileName = info.basename;
 
-var scrambles = argv[3] ? argv[3] : 0;
-var serviceName = argv[4] ? argv[4] : null;
+let scrambles = argv[3] ? argv[3] : 0;
+let serviceName = argv[4] ? argv[4] : null;
 
-var tsProgram = ts_program_txt.parse(filePath);
+let tsProgram = ts_program_txt.parse(filePath);
 if (tsProgram) {
     if (!serviceName) {
         serviceName = tsProgram.serviceName;
@@ -75,10 +77,10 @@ if (tsProgram) {
 logger.info('-- 処理を開始します: ' + filePath + ', Scrambles: ' + scrambles);
 
 // 禁止文字リネーム
-var newFileName = fileName.replace('(', '（').replace(')', '）').replace('!', '！');
+let newFileName = fileName.replace('(', '（').replace(')', '）').replace('!', '！');
 if (newFileName !== fileName) {
     try {
-        var newFilePath = require('path').join(folderPath, newFileName);
+        let newFilePath = require('path').join(folderPath, newFileName);
         logger.info('replace: ' + filePath + ' -> ' + newFilePath);
         fileName = newFileName;
         filePath = newFilePath;
@@ -91,7 +93,7 @@ if (newFileName !== fileName) {
 
 // スクランブル解除
 if (scrambles > 0) {
-    var decPath = scramble.decode(filePath);
+    let decPath = scramble.decode(filePath);
     if (decPath) {
         // スクランブル解除後のファイルを以後は利用
         try {
@@ -105,14 +107,14 @@ if (scrambles > 0) {
 }
 
 // チャプター作成
-var chapterPath = chapter.createChapter(filePath, config.CHAPTER_FOLDER, serviceName);
+let chapterPath = chapter.createChapter(filePath, config.CHAPTER_FOLDER, serviceName);
 
 // エンコードセッティング
-var encodeSettings = encode_setting.createEncodeSettings(filePath, fileName, serviceName);
+let encodeSettings = encode_setting.createEncodeSettings(filePath, fileName, serviceName);
 
 // エンコード実行
-var mp4Path = null;
-var tryCnt;
+let mp4Path = null;
+let tryCnt;
 for (tryCnt = 0; tryCnt < config.TRY_ENCODE_MAX; tryCnt++) {
 
     mp4Path = encode.encodeTS(filePath, serviceName, encodeSettings);
@@ -130,7 +132,8 @@ if (!mp4Path || fs.statSync(mp4Path).size < config.ERR_ENCODE_FILE_SIZE) {
 
 // QSVEncC使用時のみ音声のDemux -> mp4にMux
 if (config.ENCODE_APPLICATION == 1) {
-    if (demuxPaths = demux.demuxTsParser(filePath, encodeSettings.start_cut_sec)) {
+    let demuxPaths = demux.demuxTsParser(filePath, encodeSettings.start_cut_sec);
+    if (demuxPaths) {
         mux.muxForMp4(demuxPaths, mp4Path);
     }
 }
@@ -150,7 +153,7 @@ try {
     }
 }
 try {
-    var files = glob.sync(path.join(folderPath, noExtFileName + '*').replace(/\[/g, '[[]'));
+    let files = glob.sync(path.join(folderPath, noExtFileName + '*').replace(/\[/g, '[[]'));
     files.forEach(function (f) {
         fs.renameSync(f, path.join(config.TS_DONE_FOLDER, pathinfo(f).filename));
     });

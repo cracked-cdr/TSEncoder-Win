@@ -5,7 +5,9 @@
  * Created by cracked-cdr
  */
 
-var config = require('../config/config');
+'use strict';
+
+const config = require('../config/config');
 
 // 引数strの内容が含まれていればtrue
 String.prototype.hasStr = function(str) {
@@ -25,7 +27,6 @@ var encSettings = {
     start_cut_sec     : '0.0',    // 先頭何秒をカットするか(この値をエンコード時のカットとチャプター・音声のカットに使用します)
     chapter_skip_sec  : '0.0',    // エンコード後の先頭何秒間をチャプター設定しないようにするか（チャプターに使用）
 };
-module.exports.encSettings = encSettings;
 
 /*
  こちらの関数内で番組ごとのエンコード設定を記述できます

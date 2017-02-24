@@ -3,19 +3,21 @@
  * EpgDataCap_Bonの録画情報ファイル(ts.program.txt)関連のロジック
  */
 
-var fs       = require('fs');
-var path     = require('path');
-var pathinfo = require('pathinfo');
-var iconv    = require('iconv-lite');
-var logger   = require('log4js').getLogger();
+'use strict';
+
+const fs       = require('fs');
+const path     = require('path');
+const pathinfo = require('pathinfo');
+const iconv    = require('iconv-lite');
+const logger   = require('log4js').getLogger();
 
 // ts.program.txtをパースして連想配列で返す
 module.exports.parse = function(filePath) {
 
-    var program;
+    let program;
     try {
-        var info = pathinfo(filePath);
-        var readText = fs.readFileSync(path.join(info.dirname, info.basename + '.ts.program.txt'));
+        let info = pathinfo(filePath);
+        let readText = fs.readFileSync(path.join(info.dirname, info.basename + '.ts.program.txt'));
         readText = iconv.decode(readText, 'shift_jis').toString();
         program = readText.split('\r\n');
     } catch (err) {
@@ -27,8 +29,8 @@ module.exports.parse = function(filePath) {
         return null;
     }
 
-    var result = {};
-    var multiLineInfo = {};
+    let result = {};
+    let multiLineInfo = {};
     program.forEach(function(line, i) {
         switch (i)  {
             case 0: result.broadcastDatetime = line; break;
@@ -50,15 +52,15 @@ module.exports.parse = function(filePath) {
     });
 
     // 情報該当位置の配列範囲を取り出し
-    var detail            = multiLineInfo.detail ? program.slice(multiLineInfo.detail, multiLineInfo.genre - 1) : null;
-    var genre             = program.slice(multiLineInfo.genre, multiLineInfo.video);
-    var video             = program.slice(multiLineInfo.video, multiLineInfo.audio);
-    var audio             = program.slice(multiLineInfo.audio, (multiLineInfo.serviceType ? multiLineInfo.serviceType : multiLineInfo.originalNetworkID));
-    var serviceType       = program[multiLineInfo.serviceType];
-    var originalNetworkId = program[multiLineInfo.originalNetworkID];
-    var transportStreamId = program[multiLineInfo.transportStreamID];
-    var serviceId         = program[multiLineInfo.serviceId];
-    var eventId           = program[multiLineInfo.eventId];
+    let detail            = multiLineInfo.detail ? program.slice(multiLineInfo.detail, multiLineInfo.genre - 1) : null;
+    let genre             = program.slice(multiLineInfo.genre, multiLineInfo.video);
+    let video             = program.slice(multiLineInfo.video, multiLineInfo.audio);
+    let audio             = program.slice(multiLineInfo.audio, (multiLineInfo.serviceType ? multiLineInfo.serviceType : multiLineInfo.originalNetworkID));
+    let serviceType       = program[multiLineInfo.serviceType];
+    let originalNetworkId = program[multiLineInfo.originalNetworkID];
+    let transportStreamId = program[multiLineInfo.transportStreamID];
+    let serviceId         = program[multiLineInfo.serviceId];
+    let eventId           = program[multiLineInfo.eventId];
 
     if (detail) {
         result.detail = detail.join('\n').replace(/\n\n$/, '');
@@ -70,7 +72,7 @@ module.exports.parse = function(filePath) {
         result.serviceType = serviceType.replace(/\n\n$/, '');
     }
 
-    var m = originalNetworkId.match(/^OriginalNetworkID:(\d+)\(([a-zA-Z0-9]+)\)$/);
+    let m = originalNetworkId.match(/^OriginalNetworkID:(\d+)\(([a-zA-Z0-9]+)\)$/);
     if (m && m.length >= 3) {
         result.originalNetworkID10 = m[1];
         result.originalNetworkID16 = m[2];
